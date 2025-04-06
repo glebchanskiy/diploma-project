@@ -3,6 +3,8 @@ name: Build LaTeX and Release PDF
 on:
   push:
     branches: [ "main" ]
+    paths:
+      - report/**
 
 permissions:
   contents: write
