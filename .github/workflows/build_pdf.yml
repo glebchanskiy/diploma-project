@@ -1,0 +1,41 @@
+name: Build LaTeX and Release PDF
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build_latex:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install LaTeX (with latexmk)
+        uses: xu-cheng/texlive-action@v2
+        with:
+          texlive_version: "2023"
+          scheme: "full"
+
+      - name: Compile LaTeX
+        run: |
+          cd report
+          latexmk -pdf -interaction=nonstopmode -file-line-error -output-directory=build diploma/diploma_report.tex
+          ls *.pdf
+
+      - name: Upload PDF artifact (для дебага)
+        uses: actions/upload-artifact@v3
+        with:
+          name: generated-pdf
+          path: "*.pdf"
+
+      - name: Create or Update Release
+        uses: softprops/action-gh-release@v1
+        if: success()
+        with:
+          files: "*.pdf"
+          tag_name: "latest"
+          prerelease: false
+          overwrite: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
