@@ -1,0 +1,23 @@
+@startuml
+actor Пользователь
+participant "Веб-форма" as WebForm
+participant "Система" as System
+participant "Оператор" as Operator
+
+Пользователь -> WebForm: Отправить обращение
+WebForm -> System: Создать запрос
+System -> System: Определить категорию и приоритет
+alt Высокий приоритет
+    System -> Operator: Назначить запрос оператору
+else Обычный приоритет
+    System -> System: Поместить в очередь
+end
+Operator -> System: Изменить статус на "В работе"
+Operator -> Пользователь: Отправить ответ
+alt Пользователь подтверждает решение
+    Пользователь -> System: Закрыть запрос
+else Пользователь запрашивает доработку
+    Пользователь -> Operator: Запрос уточнений
+    Operator -> System: Продолжить работу над запросом
+end
+@enduml

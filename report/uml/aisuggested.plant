@@ -1,0 +1,20 @@
+@startuml
+actor Пользователь
+participant "Клиентский портал" as Portal
+participant "Система управления" as System
+participant "ИИ модуль" as AI
+participant "Оператор" as Operator
+
+Пользователь -> Portal: Создать обращение
+Portal -> System: Отправить данные обращения
+System -> AI: Анализировать текст и искать шаблон
+AI -> System: Возвращает найденный ответ
+System -> Пользователь: Предложить автоматический ответ
+alt Пользователь принимает ответ
+    Пользователь -> System: Принять ответ
+    System -> Portal: Закрыть запрос
+else Пользователь отклоняет
+    Пользователь -> System: Отклонить ответ
+    System -> Operator: Передать обращение оператору
+end
+@enduml
