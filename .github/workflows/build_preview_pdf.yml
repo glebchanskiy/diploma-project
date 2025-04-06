@@ -1,7 +1,7 @@
-name: Build LaTeX and Release PDF
+name: Build LaTeX Preview on PR
 
 on:
-  push:
+  pull_request:
     branches: [ "main" ]
 
 permissions:
@@ -27,14 +27,6 @@ jobs:
             echo '----'
             ls 
 
-      - name: Get next version
-        id: version
-        run: |
-          DATE_PART=$(date +'%Y%m%d')
-          LAST_TAG=$(git describe --tags --abbrev=0 || echo "v0.0.0")
-          NEXT_VERSION=$(echo $LAST_TAG | awk -F. '{print $1"."$2"."$3+1}')
-          echo "version=${NEXT_VERSION}.${DATE_PART}" >> $GITHUB_OUTPUT
-
       - name: Generate changelog
         run: |
           git log --pretty=format:"- %s" > CHANGES.md
@@ -45,8 +37,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ steps.version.outputs.version }}
-          release_name: "Version ${{ steps.version.outputs.version }}"
+          tag_name: DRAFT
+          release_name: "DRAFT Version"
           body_path: CHANGES.md
           files: |  
             report/build/diploma_report.pdf
