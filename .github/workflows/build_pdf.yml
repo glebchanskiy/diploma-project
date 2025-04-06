@@ -1,0 +1,52 @@
+name: Build LaTeX and Release PDF
+
+on:
+  push:
+    branches: [ "main" ]
+
+permissions:
+  contents: write
+
+jobs:
+  build_latex:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install LaTeX
+        uses: xu-cheng/texlive-action@v2
+        with:
+          texlive_version: "2023"
+          scheme: "full"
+          run: |
+            cd report
+            latexmk -pdf -interaction=nonstopmode -output-directory=build diploma/diploma_report.tex || true
+            latexmk -pdf -interaction=nonstopmode -output-directory=build diploma/diploma_report.tex || true
+            ls build/*.pdf
+            echo '----'
+            ls 
+
+      - name: Get next version
+        id: version
+        run: |
+          DATE_PART=$(date +'%Y%m%d')
+          LAST_TAG=$(git describe --tags --abbrev=0 || echo "v0.0.0")
+          NEXT_VERSION=$(echo $LAST_TAG | awk -F. '{print $1"."$2"."$3+1}')
+          echo "version=${NEXT_VERSION}.${DATE_PART}" >> $GITHUB_OUTPUT
+
+      - name: Generate changelog
+        run: |
+          git log --pretty=format:"- %s" > CHANGES.md
+          cat CHANGES.md
+
+      - name: Upload PDF to Release
+        uses: softprops/action-gh-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.version.outputs.version }}
+          release_name: "Version ${{ steps.version.outputs.version }}"
+          body_path: CHANGES.md
+          files: |  
+            report/build/diploma_report.pdf
