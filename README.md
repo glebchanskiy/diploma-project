@@ -6,6 +6,6 @@
 
 diploma-project:
 - report - исоходники пояснительной записки к диплому
-- ...
+- schemes - схемы используемые в проекте
 
 Последнюю версию пояснительной записки можно найти в [релизах](https://github.com/glebchanskiy/diploma-project/releases).
