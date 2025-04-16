@@ -1,0 +1,15 @@
+{
+  "workspace": ["engine"],
+  "imports": {
+    "@std/fs": "jsr:@std/fs@^1.0.5",
+    "@std/path": "jsr:@std/path",
+    "@grammy": "https://deno.land/x/grammy@v1.35.1/mod.ts",
+    "@grammy/types": "https://deno.land/x/grammy@v1.35.1/types.ts",
+    "@openai": "https://deno.land/x/openai@v4.69.0/mod.ts",
+    "@src/": "./src/"
+  },
+  "unstable": ["kv"],
+  "tasks": {
+    "dev": "deno run --env-file=.env -A --watch ./main.ts"
+  }
+}

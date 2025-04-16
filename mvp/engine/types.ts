@@ -1,0 +1,4 @@
+
+interface SearchApi {
+    query: string
+}

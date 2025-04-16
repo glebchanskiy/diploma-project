@@ -1,0 +1,11 @@
+{
+    "name": "@nlse/core",
+    "version": "0.0.1",
+    "exports": "./mod.ts",
+    "imports": {
+        "@neo4j": "https://deno.land/x/neo4j_driver_lite@5.27.0/mod.ts",
+        "@openai": "https://deno.land/x/openai@v4.69.0/mod.ts",
+        "@mongo": "npm:mongodb@5.6.0"
+    }
+  }
+  
