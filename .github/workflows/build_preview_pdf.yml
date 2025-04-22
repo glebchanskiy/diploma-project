@@ -34,6 +34,12 @@ jobs:
           git log --pretty=format:"- %s" > CHANGES.md
           cat CHANGES.md
 
+      - name: Delete old draft release if exists
+        run: |
+          gh release delete DRAFT --yes || true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Upload PDF to Release
         uses: softprops/action-gh-release@v1
         env:
@@ -42,5 +48,6 @@ jobs:
           tag_name: DRAFT
           release_name: "DRAFT Version"
           body_path: CHANGES.md
+          overwrite: true
           files: |  
             report/build/diploma_report.pdf
