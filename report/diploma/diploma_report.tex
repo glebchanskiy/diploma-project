@@ -2,6 +2,15 @@
 
 \begin{document}
 
+\newcommand{\pic}[4][12cm]{%
+    \begin{figure}[!ht]%
+        \begin{center}%
+        \includegraphics[width=#1]{#2}%
+        \caption{#3}\label{#4}%
+        \end{center}%
+    \end{figure}%
+}
+
 \input{description} %подстановки
 
 \input{diploma/diploma_title}
