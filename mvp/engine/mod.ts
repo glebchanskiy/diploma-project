@@ -1,1 +1,1 @@
-export { Core } from "./core.ts";
+export { ContextFactory } from "./core.ts";

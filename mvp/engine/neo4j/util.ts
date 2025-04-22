@@ -1,5 +1,5 @@
 import type { Record, RecordShape } from "@neo4j";
-import type { Node } from "./types.ts";
+import type { NeoSearchPath, Node } from "./types.ts";
 
 export const trnasformToNodes = (
   records: Record<RecordShape, PropertyKey, RecordShape<PropertyKey, number>>[],
@@ -9,7 +9,7 @@ export const trnasformToNodes = (
     name: record.get("name"),
     description: record.get("description"),
     childCount: safeGet(record, "child_count"),
-    path: safeGet(record, "full_path") //.map((r: { name: any; id: { low: any; }; }) => ({ name: r.name, id: r.id.low })),
+    path: safeGet(record, "full_path")
   }));
 
 
@@ -19,4 +19,11 @@ const safeGet = (kek: any, prop: string) => {
     } catch {
         return undefined
     }
+}
+
+export const toPathsMap = (nodes: Node[]): Map<number, NeoSearchPath> => {
+  const paths = new Map()
+  nodes.forEach(node => paths.set(node.id.low, node.path))
+
+  return paths
 }

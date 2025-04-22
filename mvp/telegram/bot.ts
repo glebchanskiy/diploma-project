@@ -1,37 +1,38 @@
 import { Bot } from "@grammy";
 import { BotContext } from "./context.ts";
 import { middleware } from "./middleware.ts";
-import { Core } from "@nlse/core";
-import { neoSearchById } from "../engine/neo4j/client.ts";
+import { ContextFactory } from "@nlse/core";
 
 const bot = new Bot<BotContext>(Deno.env.get("BOT_TOKEN") || "");
-
-const apiKey = Deno.env.get("AI_TOKEN") || "";
-
-const nlse = new Core(apiKey);
 
 bot.use(middleware);
 
 bot.on("message", async (ctx) => {
   if (!ctx.msg.text) return;
 
-  const context = await nlse.createRequest(ctx.msg.text).execute();
-  ctx.reply(context.response() ?? "неудачная попытка...");
+  const context = ContextFactory.createRequest(ctx.msg.text, 4)
 
-  await context.execute();
-
-  ctx.reply(context.response() ?? "неудачная попытка...");
-  const id = context.id();
-  if (id) {
-    const data = await neoSearchById(id)
-    console.log('id: ', id)
-    console.log('data: ', data)
-    ctx.reply(
-      `Нашёл ноду в базе знаний удовлетворяющую запросу:\n${
-        JSON.stringify(data, null, 2)
-      }`,
-    );
+  while (!context.isFound()) {
+    await context.executeNextSearch()
   }
+
+  const result = await context.result()
+
+  if (result)
+    ctx.reply(result)
+  else 
+    ctx.reply('Хмпф..')
+
+  const meta = context.meta()
+
+  console.log('meta: ', meta)
+
+  if (meta.paths.length) {
+    const paths = meta.paths.map(p => p.map(k => k.name).join(' -> ')).join('\n')
+    ctx.reply(paths)
+  }
+  
+
 });
 
 export default bot;
