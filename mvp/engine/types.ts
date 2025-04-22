@@ -1,4 +1,0 @@
-
-interface SearchApi {
-    query: string
-}

@@ -1,0 +1,106 @@
+// СОЗДАНИЕ УЗЛОВ ЗАКЛИНАНИЙ
+
+// Заклинания 0 уровня (заговоры)
+CREATE 
+(fire_bolt:Element {name: "Fire Bolt", description: "A mote of fire streaks toward a target within range, dealing 1d10 fire damage. The spell's damage increases at higher levels."}),
+(mage_hand:Element {name: "Mage Hand", description: "A spectral floating hand appears that can manipulate objects, open doors or containers, or retrieve items within 30 feet."}),
+(prestidigitation:Element {name: "Prestidigitation", description: "Creates minor magical effects like lighting or snuffing candles, cleaning objects, or creating small sensory illusions."}),
+
+// Заклинания 1 уровня
+(magic_missile:Element {name: "Magic Missile", description: "Creates darts of magical force that automatically hit targets of your choice, dealing 1d4+1 force damage each."}),
+(cure_wounds:Element {name: "Cure Wounds", description: "Heals a creature you touch for 1d8 + your spellcasting ability modifier. Healing increases when cast at higher levels."}),
+(shield:Element {name: "Shield", description: "Creates an invisible barrier of magical force granting +5 AC and immunity to Magic Missile until your next turn."}),
+
+// Заклинания 2 уровня
+(invisibility:Element {name: "Invisibility", description: "A creature you touch becomes invisible until it attacks, casts a spell, or the spell ends."}),
+(scorching_ray:Element {name: "Scorching Ray", description: "Creates three rays of fire, each requiring a ranged spell attack and dealing 2d6 fire damage on hit."}),
+(hold_person:Element {name: "Hold Person", description: "Paralyzes a humanoid target that fails a Wisdom saving throw, rendering them incapacitated."}),
+
+// Заклинания 3 уровня
+(fireball:Element {name: "Fireball", description: "A bright streak flashes from your finger to a point you choose and then blossoms into an explosion of flame dealing 8d6 fire damage."}),
+(revivify:Element {name: "Revivify", description: "Returns a creature dead for no longer than 1 minute to life with 1 hit point."}),
+(counterspell:Element {name: "Counterspell", description: "Attempts to interrupt a creature in the process of casting a spell."}),
+
+// Заклинания 4 уровня
+(polymorph:Element {name: "Polymorph", description: "Transforms a creature into a new form, replacing its game statistics while keeping its personality."}),
+(dimension_door:Element {name: "Dimension Door", description: "Teleports you and optionally one willing creature to a destination within 500 feet."}),
+(greater_invisibility:Element {name: "Greater Invisibility", description: "Makes a creature invisible even when they attack or cast spells."}),
+
+// Заклинания 5 уровня
+(cone_of_cold:Element {name: "Cone of Cold", description: "A blast of cold air erupts from your hands, dealing 8d8 cold damage to creatures in a 60-foot cone."}),
+(raise_dead:Element {name: "Raise Dead", description: "Returns a dead creature to life, provided it has been dead no longer than 10 days."}),
+(scrying:Element {name: "Scrying", description: "Allows you to see and hear a particular creature of your choice that is on the same plane of existence."}),
+
+// Заклинания 6 уровня
+(disintegrate:Element {name: "Disintegrate", description: "A thin green ray springs from your pointing finger, potentially reducing a target to dust if it fails its save."}),
+(true_seeing:Element {name: "True Seeing", description: "Grants the ability to see in darkness, detect secret doors, and perceive the true form of shapeshifters."}),
+(globe_of_invulnerability:Element {name: "Globe of Invulnerability", description: "Creates a barrier that blocks spells of 5th level or lower."}),
+
+// Заклинания 7 уровня
+(finger_of_death:Element {name: "Finger of Death", description: "Sends negative energy coursing through a target, dealing 7d8+30 necrotic damage and potentially creating a zombie."}),
+(teleport:Element {name: "Teleport", description: "Instantly transports you and up to eight willing creatures to a destination on the same plane of existence."}),
+(regenerate:Element {name: "Regenerate", description: "Causes severed body members to regrow and restores 4d8+15 hit points."}),
+
+// Заклинания 8 уровня
+(power_word_stun:Element {name: "Power Word Stun", description: "Utters a word of power that can stun a creature with 150 hit points or fewer."}),
+(antimagic_field:Element {name: "Antimagic Field", description: "Creates a sphere where magic cannot function."}),
+(clone:Element {name: "Clone", description: "Creates an inert duplicate of a living creature as insurance against death."}),
+
+// Заклинания 9 уровня
+(wish:Element {name: "Wish", description: "The mightiest spell a mortal can cast, allowing you to alter the very foundations of reality."}),
+(meteor_swarm:Element {name: "Meteor Swarm", description: "Blazing orbs of fire plummet to the ground dealing massive fire and bludgeoning damage in four 40-foot-radius spheres."}),
+(time_stop:Element {name: "Time Stop", description: "Briefly stops the flow of time for everything but you, allowing you to take 1d4+1 turns in a row."}),
+
+// СВЯЗЫВАНИЕ ЗАКЛИНАНИЙ С УРОВНЯМИ И ШКОЛАМИ
+
+(cantrips:Element {name: "Заговор", description: "Magic that does not require spell cells"}),
+
+// Связывание заговоров
+(cantrips)-[:DECOMPOSITION]->(fire_bolt),
+(cantrips)-[:DECOMPOSITION]->(mage_hand),
+(cantrips)-[:DECOMPOSITION]->(prestidigitation),
+
+// Связывание заклинаний 1 уровня
+(level1_spells)-[:DECOMPOSITION]->(magic_missile),
+(level1_spells)-[:DECOMPOSITION]->(cure_wounds),
+(level1_spells)-[:DECOMPOSITION]->(shield),
+
+// Связывание заклинаний 2 уровня
+(level2_spells)-[:DECOMPOSITION]->(invisibility),
+(level2_spells)-[:DECOMPOSITION]->(scorching_ray),
+(level2_spells)-[:DECOMPOSITION]->(hold_person),
+
+// Связывание заклинаний 3 уровня
+(level3_spells)-[:DECOMPOSITION]->(fireball),
+(level3_spells)-[:DECOMPOSITION]->(revivify),
+(level3_spells)-[:DECOMPOSITION]->(counterspell),
+
+// Связывание заклинаний 4 уровня
+(level4_spells)-[:DECOMPOSITION]->(polymorph),
+(level4_spells)-[:DECOMPOSITION]->(dimension_door),
+(level4_spells)-[:DECOMPOSITION]->(greater_invisibility),
+
+// Связывание заклинаний 5 уровня
+(level5_spells)-[:DECOMPOSITION]->(cone_of_cold),
+(level5_spells)-[:DECOMPOSITION]->(raise_dead),
+(level5_spells)-[:DECOMPOSITION]->(scrying),
+
+// Связывание заклинаний 6 уровня
+(level6_spells)-[:DECOMPOSITION]->(disintegrate),
+(level6_spells)-[:DECOMPOSITION]->(true_seeing),
+(level6_spells)-[:DECOMPOSITION]->(globe_of_invulnerability),
+
+// Связывание заклинаний 7 уровня
+(level7_spells)-[:DECOMPOSITION]->(finger_of_death),
+(level7_spells)-[:DECOMPOSITION]->(teleport),
+(level7_spells)-[:DECOMPOSITION]->(regenerate),
+
+// Связывание заклинаний 8 уровня
+(level8_spells)-[:DECOMPOSITION]->(power_word_stun),
+(level8_spells)-[:DECOMPOSITION]->(antimagic_field),
+(level8_spells)-[:DECOMPOSITION]->(clone),
+
+// Связывание заклинаний 9 уровня
+(level9_spells)-[:DECOMPOSITION]->(wish),
+(level9_spells)-[:DECOMPOSITION]->(meteor_swarm),
+(level9_spells)-[:DECOMPOSITION]->(time_stop),

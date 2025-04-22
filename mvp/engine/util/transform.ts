@@ -1,4 +1,4 @@
-import type { Node } from "./neo4j/types.ts";
+import type { Node } from "../neo4j/types.ts";
 
 const path = (node: Node) => {
     return node.path.map(p => p.name).join(' -> ')

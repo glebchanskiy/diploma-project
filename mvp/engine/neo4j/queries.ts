@@ -2,7 +2,7 @@
 // You'll need to store these nodeIds client-side after the first execution
 
 export const firstLevelQuery = `
-MATCH path = (root {name: "Dungeons & Dragons"})-[:DECOMPOSITION*0..3]->(n)
+MATCH path = (root {name: "Dungeons & Dragons"})-[:DECOMPOSITION*0..2]->(n)
 RETURN 
   id(n) AS nodeId,
   n.name AS name,
@@ -18,7 +18,7 @@ LIMIT 30;
 export const subsequentQuery = `
 MATCH path = (startNode)-[:DECOMPOSITION*0..2]->(n)
 WHERE id(startNode) = $startNodeId
-AND NOT id(n) IN $visitedNodeIds
+AND NOT id(n) IN $escapeIds
 RETURN 
   id(n) AS nodeId,
   n.name AS name,

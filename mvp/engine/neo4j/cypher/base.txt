@@ -1,0 +1,329 @@
+// CREATE HIERARCHICAL KNOWLEDGE BASE FOR DUNGEONS & DRAGONS
+
+CREATE 
+// Root node - D&D Game System
+(dnd:Element {name: "Dungeons & Dragons", description: "A fantasy tabletop role-playing game originally designed by Gary Gygax and Dave Arneson, first published in 1974 by Tactical Studies Rules, Inc."}),
+
+// PRIMARY CATEGORIES
+(rules:Element {name: "Rules", description: "The fundamental frameworks and systems that govern gameplay, including character creation, action resolution, and game progression"}),
+(classes:Element {name: "Classes", description: "Character archetypes that define a character's abilities, strengths, weaknesses, and approaches to adventure challenges"}),
+(races:Element {name: "Races", description: "The various species and ancestries that characters can belong to, each with unique traits and cultural backgrounds"}),
+(spells:Element {name: "Spells", description: "Magical incantations and rituals that allow characters to manipulate the fabric of reality and perform supernatural feats"}),
+(equipment:Element {name: "Equipment", description: "Physical tools, weapons, armor, and items that characters use during their adventures"}),
+(settings:Element {name: "Campaign Settings", description: "Worlds and environments where adventures take place, each with unique geography, history, and cultures"}),
+(monsters:Element {name: "Monsters", description: "Creatures and adversaries that challenge players during their adventures, ranging from common beasts to legendary entities"}),
+(mechanics:Element {name: "Game Mechanics", description: "Specific systems and subsystems that handle different aspects of play like combat, skill checks, and magic"}),
+
+// RULES DECOMPOSITION
+(core_rules:Element {name: "Core Rulebooks", description: "The primary rulebooks that form the foundation of the game system"}),
+(basic_rules:Element {name: "Basic Rules", description: "Simplified rule set designed for new players to learn the game fundamentals"}),
+(advanced_rules:Element {name: "Advanced Rules", description: "Complex rule systems for experienced players seeking additional depth"}),
+(optional_rules:Element {name: "Optional Rules", description: "Variant rules that can be implemented to customize the game experience"}),
+(character_creation:Element {name: "Character Creation", description: "Rules and guidelines for developing player characters from concept to game-ready state"}),
+(leveling:Element {name: "Character Advancement", description: "Systems governing how characters grow in power and capability through experience"}),
+
+// GAME MECHANICS DECOMPOSITION
+(combat:Element {name: "Combat", description: "Rules that govern battles, including initiative, attacks, damage, and tactical movement"}),
+(magic_system:Element {name: "Magic System", description: "Rules for casting spells, preparing magic, and magical effects"}),
+(dice_mechanics:Element {name: "Dice Mechanics", description: "Systems for using dice to determine outcomes of actions and events"}),
+(ability_checks:Element {name: "Ability Checks", description: "Rules for testing character attributes against challenges"}),
+(saving_throws:Element {name: "Saving Throws", description: "Defensive rolls made to resist harmful effects"}),
+(rest_recovery:Element {name: "Rest and Recovery", description: "Systems for restoring health, abilities, and resources through rest"}),
+(movement:Element {name: "Movement and Exploration", description: "Rules for traveling, exploring environments, and navigating various terrains"}),
+(conditions:Element {name: "Conditions", description: "Status effects that can impact characters' capabilities and actions"}),
+
+// COMBAT DECOMPOSITION
+(initiative:Element {name: "Initiative", description: "System determining the order of actions in combat encounters"}),
+(attack_rolls:Element {name: "Attack Rolls", description: "Mechanics for determining if attacks hit their targets"}),
+(damage:Element {name: "Damage and Healing", description: "Rules for inflicting and recovering from injuries"}),
+(actions:Element {name: "Actions in Combat", description: "Options available to characters during battle, including standard, bonus, and reactions"}),
+(cover:Element {name: "Cover and Concealment", description: "Rules for how obstacles provide protection in combat"}),
+(opportunity_attacks:Element {name: "Opportunity Attacks", description: "Special reactions triggered by enemy movement"}),
+
+// CLASSES DECOMPOSITION
+(martial_classes:Element {name: "Martial Classes", description: "Character classes focused on physical combat skills and weapon mastery"}),
+(magical_classes:Element {name: "Magical Classes", description: "Character classes with primary focus on spellcasting and magical abilities"}),
+(hybrid_classes:Element {name: "Hybrid Classes", description: "Character classes that blend combat prowess with magical capabilities"}),
+(support_classes:Element {name: "Support Classes", description: "Character classes specialized in aiding allies and enhancing group capabilities"}),
+
+// MARTIAL CLASSES
+(fighter:Element {name: "Fighter", description: "Masters of combat who can wield any weapon or armor with unmatched skill and precision"}),
+(barbarian:Element {name: "Barbarian", description: "Fierce warriors who channel primal rage to enhance their battlefield capabilities"}),
+(monk:Element {name: "Monk", description: "Disciplined warriors who harness the power of their body and spirit for extraordinary combat prowess"}),
+(rogue:Element {name: "Rogue", description: "Skilled specialists excelling in stealth, precision strikes, and disarming traps"}),
+
+// MAGICAL CLASSES
+(wizard:Element {name: "Wizard", description: "Scholarly spellcasters who learn magic through dedicated study and arcane research"}),
+(sorcerer:Element {name: "Sorcerer", description: "Innate spellcasters with magic flowing through their bloodline or magical origins"}),
+(warlock:Element {name: "Warlock", description: "Practitioners who gain magical powers through pacts with powerful otherworldly entities"}),
+
+// HYBRID CLASSES
+(paladin:Element {name: "Paladin", description: "Holy warriors who combine martial prowess with divine magic fueled by sacred oaths"}),
+(ranger:Element {name: "Ranger", description: "Wilderness experts who blend combat skills with nature magic and tracking abilities"}),
+(artificer:Element {name: "Artificer", description: "Innovative crafters who infuse mundane items with magical properties and create magical tools"}),
+
+// SUPPORT CLASSES
+(cleric:Element {name: "Cleric", description: "Divine spellcasters who serve deities and channel divine power to heal and protect"}),
+(bard:Element {name: "Bard", description: "Versatile performers whose music and stories weave magic to inspire allies and hinder foes"}),
+(druid:Element {name: "Druid", description: "Nature guardians who wield elemental magic and can transform into animals"}),
+
+// RACES DECOMPOSITION
+(common_races:Element {name: "Common Races", description: "Frequently encountered ancestries across most campaign settings"}),
+(uncommon_races:Element {name: "Uncommon Races", description: "Less frequently seen ancestries with distinctive traits and abilities"}),
+(monstrous_races:Element {name: "Monstrous Races", description: "Non-traditional player ancestries derived from monster species"}),
+
+// COMMON RACES
+(human:Element {name: "Human", description: "Versatile and ambitious people known for adaptability and drive to achieve greatness"}),
+(elf:Element {name: "Elf", description: "Graceful, long-lived beings with natural affinity for magic and connection to nature"}),
+(dwarf:Element {name: "Dwarf", description: "Stout, resilient mountain folk renowned for craftsmanship, mining, and brewing"}),
+(halfling:Element {name: "Halfling", description: "Small, nimble folk with extraordinary luck and cheerful disposition"}),
+
+// UNCOMMON RACES
+(gnome:Element {name: "Gnome", description: "Curious and energetic tinkerers with natural magical talents and mischievous nature"}),
+(half_elf:Element {name: "Half-Elf", description: "Individuals with mixed human and elven heritage, combining traits of both ancestries"}),
+(half_orc:Element {name: "Half-Orc", description: "Strong individuals with mixed human and orcish heritage, possessing impressive physical prowess"}),
+(tiefling:Element {name: "Tiefling", description: "People with infernal heritage, exhibiting fiendish traits and resistance to fire"}),
+
+// MONSTROUS RACES
+(dragonborn:Element {name: "Dragonborn", description: "Draconic humanoids with breath weapons and scaled bodies, embodying draconic virtues"}),
+(goliath:Element {name: "Goliath", description: "Giant-kin mountaineers with impressive strength and competitive nature"}),
+(tabaxi:Element {name: "Tabaxi", description: "Cat-like humanoids with natural agility, climbing ability, and curiosity"}),
+(kenku:Element {name: "Kenku", description: "Raven-like beings with perfect mimicry but unable to create original sounds"}),
+
+// SPELLS DECOMPOSITION
+(spell_levels:Element {name: "Spell Levels", description: "Categories of spells based on power and complexity"}),
+(spell_schools:Element {name: "Schools of Magic", description: "Categories of spells based on their magical effects and properties"}),
+(casting_methods:Element {name: "Casting Methods", description: "Different approaches to invoking and channeling magical energy"}),
+
+// SPELL LEVELS
+(cantrips:Element {name: "Cantrips", description: "Minor spells that can be cast at will without expending spell slots"}),
+(level1_spells:Element {name: "1st Level Spells", description: "Basic spells accessible to novice spellcasters"}),
+(level2_spells:Element {name: "2nd Level Spells", description: "Intermediate spells with enhanced effects and utility"}),
+(level3_spells:Element {name: "3rd Level Spells", description: "Advanced spells with significant battlefield impact"}),
+(level4_spells:Element {name: "4th Level Spells", description: "Powerful spells that can turn the tide of encounters"}),
+(level5_spells:Element {name: "5th Level Spells", description: "Major spells with far-reaching consequences"}),
+(level6_spells:Element {name: "6th Level Spells", description: "Mighty spells beyond the reach of most practitioners"}),
+(level7_spells:Element {name: "7th Level Spells", description: "Extremely potent spells limited to master spellcasters"}),
+(level8_spells:Element {name: "8th Level Spells", description: "Near-legendary spells with reality-altering capabilities"}),
+(level9_spells:Element {name: "9th Level Spells", description: "The pinnacle of mortal magic, capable of extraordinary feats"}),
+
+// SPELL SCHOOLS
+(abjuration:Element {name: "Abjuration", description: "Protective spells that create barriers, negate magical effects, or banish entities"}),
+(conjuration:Element {name: "Conjuration", description: "Spells that transport objects, creatures, or create matter from other planes"}),
+(divination:Element {name: "Divination", description: "Information-gathering spells that reveal secrets, locate objects, or glimpse the future"}),
+(enchantment:Element {name: "Enchantment", description: "Mind-affecting spells that influence thoughts and behaviors of creatures"}),
+(evocation:Element {name: "Evocation", description: "Energy-manipulating spells that create elemental effects and direct damage"}),
+(illusion:Element {name: "Illusion", description: "Reality-deceiving spells that trick the senses or create false impressions"}),
+(necromancy:Element {name: "Necromancy", description: "Life force manipulation spells dealing with death, undeath, and life energy"}),
+(transmutation:Element {name: "Transmutation", description: "Matter-altering spells that transform physical properties or forms"}),
+
+// EQUIPMENT DECOMPOSITION
+(weapons:Element {name: "Weapons", description: "Arms used to inflict damage on opponents in combat"}),
+(armor:Element {name: "Armor", description: "Protective gear worn to reduce damage from attacks"}),
+(adventuring_gear:Element {name: "Adventuring Gear", description: "Tools, equipment, and supplies used during exploration and travel"}),
+(magic_items:Element {name: "Magic Items", description: "Objects enchanted with magical properties and abilities"}),
+
+// WEAPONS DECOMPOSITION
+(simple_weapons:Element {name: "Simple Weapons", description: "Basic weapons requiring minimal training to use effectively"}),
+(martial_weapons:Element {name: "Martial Weapons", description: "Advanced weapons requiring dedicated training for proficient use"}),
+(ranged_weapons:Element {name: "Ranged Weapons", description: "Weapons designed to attack targets at a distance"}),
+(melee_weapons:Element {name: "Melee Weapons", description: "Weapons designed for close combat encounters"}),
+
+// ARMOR DECOMPOSITION
+(light_armor:Element {name: "Light Armor", description: "Flexible protection that allows great mobility but modest defense"}),
+(medium_armor:Element {name: "Medium Armor", description: "Balanced protection offering moderate defense with some mobility limitations"}),
+(heavy_armor:Element {name: "Heavy Armor", description: "Substantial protection providing excellent defense but limiting mobility"}),
+(shields:Element {name: "Shields", description: "Defensive implements held in one hand to deflect attacks"}),
+
+// MAGIC ITEMS DECOMPOSITION
+(potions:Element {name: "Potions", description: "Magical liquids with various effects when consumed"}),
+(scrolls:Element {name: "Scrolls", description: "Magical writings that allow one-time casting of specific spells"}),
+(wands:Element {name: "Wands", description: "Slender implements that channel specific magical effects"}),
+(rings:Element {name: "Rings", description: "Magical jewelry worn on fingers that provide continuous effects"}),
+(wondrous_items:Element {name: "Wondrous Items", description: "Unique magical objects with varied and often powerful capabilities"}),
+
+// SETTINGS DECOMPOSITION
+(forgotten_realms:Element {name: "Forgotten Realms", description: "Rich fantasy world with diverse regions, extensive history, and countless adventures"}),
+(eberron:Element {name: "Eberron", description: "Magically advanced world combining fantasy with noir and pulp elements"}),
+(ravenloft:Element {name: "Ravenloft", description: "Gothic horror setting with isolated domains ruled by dark lords"}),
+(greyhawk:Element {name: "Greyhawk", description: "Classic fantasy world focused on political intrigue and exploration"}),
+(dragonlance:Element {name: "Dragonlance", description: "Epic fantasy world where dragons play crucial roles in the ongoing conflict between good and evil"}),
+
+// MONSTERS DECOMPOSITION
+(monster_types:Element {name: "Monster Types", description: "Categories of creatures based on their fundamental nature"}),
+(challenge_ratings:Element {name: "Challenge Ratings", description: "System for measuring monster difficulty and appropriate encounter levels"}),
+(legendary_creatures:Element {name: "Legendary Creatures", description: "Exceptionally powerful monsters with special actions and resistances"}),
+
+// MONSTER TYPES
+(aberrations:Element {name: "Aberrations", description: "Utterly alien beings with bizarre anatomies and strange abilities"}),
+(beasts:Element {name: "Beasts", description: "Non-magical creatures found in nature, including normal and giant animals"}),
+(celestials:Element {name: "Celestials", description: "Divine beings native to the upper planes, embodying goodness and order"}),
+(constructs:Element {name: "Constructs", description: "Artificial creatures animated by magic rather than life force"}),
+(dragons:Element {name: "Dragons", description: "Ancient reptilian creatures of immense power, intelligence, and magical ability"}),
+(elementals:Element {name: "Elementals", description: "Embodiments of the four elemental planes: air, earth, fire, and water"}),
+(fey:Element {name: "Fey", description: "Magical creatures native to the Feywild, often capricious and mischievous"}),
+(fiends:Element {name: "Fiends", description: "Evil beings from the lower planes including demons, devils, and yugoloth"}),
+(giants:Element {name: "Giants", description: "Enormous humanoids with tremendous strength and ancient cultures"}),
+(monstrosities:Element {name: "Monstrosities", description: "Unnatural creatures that are not easily categorized elsewhere"}),
+(oozes:Element {name: "Oozes", description: "Amorphous creatures that consume organic matter"}),
+(plants:Element {name: "Plants", description: "Vegetable creatures, some ambulatory and others rooted in place"}),
+(undead:Element {name: "Undead", description: "Formerly living creatures animated by necromantic energy or cursed existence"}),
+
+// PRIMARY RELATIONSHIPS - DECOMPOSITION HIERARCHY
+// Connect the root to main categories
+(dnd)-[:DECOMPOSITION]->(rules),
+(dnd)-[:DECOMPOSITION]->(classes),
+(dnd)-[:DECOMPOSITION]->(races),
+(dnd)-[:DECOMPOSITION]->(spells),
+(dnd)-[:DECOMPOSITION]->(equipment),
+(dnd)-[:DECOMPOSITION]->(settings),
+(dnd)-[:DECOMPOSITION]->(monsters),
+(dnd)-[:DECOMPOSITION]->(mechanics),
+
+// Rules decomposition
+(rules)-[:DECOMPOSITION]->(core_rules),
+(rules)-[:DECOMPOSITION]->(basic_rules),
+(rules)-[:DECOMPOSITION]->(advanced_rules),
+(rules)-[:DECOMPOSITION]->(optional_rules),
+(rules)-[:DECOMPOSITION]->(character_creation),
+(rules)-[:DECOMPOSITION]->(leveling),
+
+// Game mechanics decomposition
+(mechanics)-[:DECOMPOSITION]->(combat),
+(mechanics)-[:DECOMPOSITION]->(magic_system),
+(mechanics)-[:DECOMPOSITION]->(dice_mechanics),
+(mechanics)-[:DECOMPOSITION]->(ability_checks),
+(mechanics)-[:DECOMPOSITION]->(saving_throws),
+(mechanics)-[:DECOMPOSITION]->(rest_recovery),
+(mechanics)-[:DECOMPOSITION]->(movement),
+(mechanics)-[:DECOMPOSITION]->(conditions),
+
+// Combat decomposition
+(combat)-[:DECOMPOSITION]->(initiative),
+(combat)-[:DECOMPOSITION]->(attack_rolls),
+(combat)-[:DECOMPOSITION]->(damage),
+(combat)-[:DECOMPOSITION]->(actions),
+(combat)-[:DECOMPOSITION]->(cover),
+(combat)-[:DECOMPOSITION]->(opportunity_attacks),
+
+// Classes decomposition
+(classes)-[:DECOMPOSITION]->(martial_classes),
+(classes)-[:DECOMPOSITION]->(magical_classes),
+(classes)-[:DECOMPOSITION]->(hybrid_classes),
+(classes)-[:DECOMPOSITION]->(support_classes),
+
+// Martial classes decomposition
+(martial_classes)-[:DECOMPOSITION]->(fighter),
+(martial_classes)-[:DECOMPOSITION]->(barbarian),
+(martial_classes)-[:DECOMPOSITION]->(monk),
+(martial_classes)-[:DECOMPOSITION]->(rogue),
+
+// Magical classes decomposition
+(magical_classes)-[:DECOMPOSITION]->(wizard),
+(magical_classes)-[:DECOMPOSITION]->(sorcerer),
+(magical_classes)-[:DECOMPOSITION]->(warlock),
+
+// Hybrid classes decomposition
+(hybrid_classes)-[:DECOMPOSITION]->(paladin),
+(hybrid_classes)-[:DECOMPOSITION]->(ranger),
+(hybrid_classes)-[:DECOMPOSITION]->(artificer),
+
+// Support classes decomposition
+(support_classes)-[:DECOMPOSITION]->(cleric),
+(support_classes)-[:DECOMPOSITION]->(bard),
+(support_classes)-[:DECOMPOSITION]->(druid),
+
+// Races decomposition
+(races)-[:DECOMPOSITION]->(common_races),
+(races)-[:DECOMPOSITION]->(uncommon_races),
+(races)-[:DECOMPOSITION]->(monstrous_races),
+
+// Common races decomposition
+(common_races)-[:DECOMPOSITION]->(human),
+(common_races)-[:DECOMPOSITION]->(elf),
+(common_races)-[:DECOMPOSITION]->(dwarf),
+(common_races)-[:DECOMPOSITION]->(halfling),
+
+// Uncommon races decomposition
+(uncommon_races)-[:DECOMPOSITION]->(gnome),
+(uncommon_races)-[:DECOMPOSITION]->(half_elf),
+(uncommon_races)-[:DECOMPOSITION]->(half_orc),
+(uncommon_races)-[:DECOMPOSITION]->(tiefling),
+
+// Monstrous races decomposition
+(monstrous_races)-[:DECOMPOSITION]->(dragonborn),
+(monstrous_races)-[:DECOMPOSITION]->(goliath),
+(monstrous_races)-[:DECOMPOSITION]->(tabaxi),
+(monstrous_races)-[:DECOMPOSITION]->(kenku),
+
+// Spells decomposition
+(spells)-[:DECOMPOSITION]->(spell_levels),
+(spells)-[:DECOMPOSITION]->(spell_schools),
+(spells)-[:DECOMPOSITION]->(casting_methods),
+
+// Spell levels decomposition
+(spell_levels)-[:DECOMPOSITION]->(cantrips),
+(spell_levels)-[:DECOMPOSITION]->(level1_spells),
+(spell_levels)-[:DECOMPOSITION]->(level2_spells),
+(spell_levels)-[:DECOMPOSITION]->(level3_spells),
+(spell_levels)-[:DECOMPOSITION]->(level4_spells),
+(spell_levels)-[:DECOMPOSITION]->(level5_spells),
+(spell_levels)-[:DECOMPOSITION]->(level6_spells),
+(spell_levels)-[:DECOMPOSITION]->(level7_spells),
+(spell_levels)-[:DECOMPOSITION]->(level8_spells),
+(spell_levels)-[:DECOMPOSITION]->(level9_spells),
+
+// Spell schools decomposition
+(spell_schools)-[:DECOMPOSITION]->(abjuration),
+(spell_schools)-[:DECOMPOSITION]->(conjuration),
+(spell_schools)-[:DECOMPOSITION]->(divination),
+(spell_schools)-[:DECOMPOSITION]->(enchantment),
+(spell_schools)-[:DECOMPOSITION]->(evocation),
+(spell_schools)-[:DECOMPOSITION]->(illusion),
+(spell_schools)-[:DECOMPOSITION]->(necromancy),
+(spell_schools)-[:DECOMPOSITION]->(transmutation),
+
+// Equipment decomposition
+(equipment)-[:DECOMPOSITION]->(weapons),
+(equipment)-[:DECOMPOSITION]->(armor),
+(equipment)-[:DECOMPOSITION]->(adventuring_gear),
+(equipment)-[:DECOMPOSITION]->(magic_items),
+
+// Weapons decomposition
+(weapons)-[:DECOMPOSITION]->(simple_weapons),
+(weapons)-[:DECOMPOSITION]->(martial_weapons),
+(weapons)-[:DECOMPOSITION]->(ranged_weapons),
+(weapons)-[:DECOMPOSITION]->(melee_weapons),
+
+// Armor decomposition
+(armor)-[:DECOMPOSITION]->(light_armor),
+(armor)-[:DECOMPOSITION]->(medium_armor),
+(armor)-[:DECOMPOSITION]->(heavy_armor),
+(armor)-[:DECOMPOSITION]->(shields),
+
+// Magic items decomposition
+(magic_items)-[:DECOMPOSITION]->(potions),
+(magic_items)-[:DECOMPOSITION]->(scrolls),
+(magic_items)-[:DECOMPOSITION]->(wands),
+(magic_items)-[:DECOMPOSITION]->(rings),
+(magic_items)-[:DECOMPOSITION]->(wondrous_items),
+
+// Monsters decomposition
+(monsters)-[:DECOMPOSITION]->(monster_types),
+(monsters)-[:DECOMPOSITION]->(challenge_ratings),
+(monsters)-[:DECOMPOSITION]->(legendary_creatures),
+
+// Monster types decomposition
+(monster_types)-[:DECOMPOSITION]->(aberrations),
+(monster_types)-[:DECOMPOSITION]->(beasts),
+(monster_types)-[:DECOMPOSITION]->(celestials),
+(monster_types)-[:DECOMPOSITION]->(constructs),
+(monster_types)-[:DECOMPOSITION]->(dragons),
+(monster_types)-[:DECOMPOSITION]->(elementals),
+(monster_types)-[:DECOMPOSITION]->(fey),
+(monster_types)-[:DECOMPOSITION]->(fiends),
+(monster_types)-[:DECOMPOSITION]->(giants),
+(monster_types)-[:DECOMPOSITION]->(monstrosities),
+(monster_types)-[:DECOMPOSITION]->(oozes),
+(monster_types)-[:DECOMPOSITION]->(plants),
+(monster_types)-[:DECOMPOSITION]->(undead);

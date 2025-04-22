@@ -1,77 +1,144 @@
-import { neoSearch, neoSearchFirst } from "./neo4j/client.ts";
-import { sysAsist } from "./prompts.ts";
+import { neoSearch, neoSearchById, neoSearchFirst } from "./neo4j/client.ts";
+import { llmRequest } from "./ai/client.ts";
+import { PromptCreator } from "./prompt/creator.ts";
+import { clearJson } from "./util/clearJson.ts";
+import { parseLLMJson } from "./util/parseLLMJson.ts";
+import { NeoSearchPath } from "./neo4j/types.ts";
 
 type State = {
   query: string;
+  maxDivesCount?: number;
+};
+
+export type LLMResponse = {
+  needToVisit?: number[];
+  foundedKnowledgeID?: number;
+  comment: string;
 };
 
 export class Context {
-  private responseText: string | undefined;
+  private iteration = 0;
+  private panicMode = false;
+  private history: { req: string; res: string }[] = [];
+  private visitedNodes: Set<number> = new Set();
+  private needToVisitStack: {id: number, name: string}[] = [];
+  private foundedKnowledgeID: number | undefined;
+  private comments: string[] = [];
 
-  private visitedNodes: number[] = [];
-  private neoText: string | undefined;
-  private startNodeId: number | undefined;
-  private foundedKnowledgeID: number | undefined
+  private pathHistory: NeoSearchPath[] = []
 
-  constructor(
-    private callAi: (
-      system: string,
-      user: string,
-    ) => Promise<string | undefined>,
-    private state: State,
-  ) {
+  constructor(private state: State) {
   }
 
-  public async execute() {
-    console.log('visitedNodes: ', this.visitedNodes)
-    console.log('startNodeId: ', this.startNodeId)
-    if (this.visitedNodes.length === 0 || !this.startNodeId) {
-      console.log('simple search')
-      const { text, visitedNodes } = await neoSearchFirst();
-      this.neoText = text;
-      this.visitedNodes.push(...visitedNodes);
-      
-    } else {
-      console.log('nested search')
-      const { text, visitedNodes } = await neoSearch(
-        this.startNodeId,
-        this.visitedNodes,
-      );
-      this.neoText = text;
-      this.visitedNodes.push(...visitedNodes);
+  public isFound() {
+    return !!this.foundedKnowledgeID || this.panicMode;
+  }
+
+  public async executeNextSearch() {
+    if (this.iteration >= this.state.maxDivesCount!) {
+      return this.panicMode = true;
     }
 
-    // console.log("NeoText: ", this.neoText)
-    // console.log("visitedNodes: ", this.visitedNodes)
+    console.log(`Search execution #${this.iteration++}`);
 
-    this.responseText = await this.callAi(
-      sysAsist,
-      `QUERY: ${this.state.query}\nKNOWLEDGES:\n${this.neoText}`,
-    ).then(t => t?.replace('```json', '')?.replace('```', ''));
+    let result;
+    if (this.visitedNodes.size === 0 || this.needToVisitStack.length === 0) {
+      result = await neoSearchFirst();
+    } else {
+      const startNodeId = this.needToVisitStack.pop()
 
-    try {
-      if (this.responseText) {
-        const response = JSON.parse(this.responseText)
-        console.log('Parsed: ', response)
-        if (response.needToVisit) {
-          this.startNodeId = Number(response.needToVisit)
-        }
-        if (response.foundedKnowledgeID) {
-          this.foundedKnowledgeID = Number(response.foundedKnowledgeID)
-        }
+      if (!startNodeId) {
+        this.panicMode = true
+        return this
       }
-    } catch (_err) {}
 
-    console.log('Response: ', this.responseText)
+      result = await neoSearch({
+        escapeIds: [...this.visitedNodes],
+        startNodeId,
+      });
+      this.pathHistory.push()
+    }
+    
+    result.visitedNodesIds.forEach((n) => this.visitedNodes.add(n));
+
+    const query = this.state.query;
+    const knowledge = result.knowledgeBaseFragment;
+    const history = this.history;
+
+    const llmResponse = await llmRequest(
+      PromptCreator.search({ query, knowledge, history }),
+    ).then(clearJson).then(parseLLMJson);
+
+    if (!llmResponse) {
+      return this;
+    }
+
+    if (llmResponse.needToVisit) {
+      this.needToVisitStack = this.filterNneedToVisit(llmResponse.needToVisit);
+    }
+
+    if (llmResponse.foundedKnowledgeID) {
+      this.foundedKnowledgeID = llmResponse.foundedKnowledgeID;
+      const path = result.paths.get(llmResponse.foundedKnowledgeID)
+      if (path)
+        this.pathHistory.push(path)
+    }
+
+    if (llmResponse.comment) {
+      this.comments.push(llmResponse.comment);
+    }
+
+    console.log("LLM Response:\n", llmResponse);
+    console.log();
 
     return this;
   }
 
-  public response() {
-    return this.responseText;
+  private async ok() {
+    const knowledgeNode = await neoSearchById(this.foundedKnowledgeID!);
+
+    const query = this.state.query;
+    const knowledge =
+      `Knowledge[id=${knowledgeNode.id},name=${knowledgeNode.name},content=${knowledgeNode.description}]`;
+    const comments = this.comments.map((c, i) => `Step ${i + 1}: ${c}`)
+      .join("\n");
+
+    const result = await llmRequest(PromptCreator.finalize({ query, knowledge, comments }));
+
+    console.log('\nSuccessfully executed. Search answer:\n', result)
+    return result
   }
 
-  public id() {
-    return this.foundedKnowledgeID;
+  private async failed() {
+    const query = this.state.query;
+    const knowledge =
+      `Knowledge[NotFound] (После множества безуспешных попыток сработало ограничение поиска)`;
+    const comments = this.comments.map((c, i) => `Step ${i + 1}: ${c}`)
+      .join("\n");
+
+    const result = await llmRequest(PromptCreator.finalize({ query, knowledge, comments }));
+  
+    console.log('\nExecution failed. Search answer:\n', result)
+    return result;
+  }
+
+  public result() {
+    if (this.panicMode) return this.failed();
+
+    return this.ok();
+  }
+
+  public meta() {
+    return {
+      paths: this.pathHistory
+    }
+  }
+
+  private filterNneedToVisit(needToVisit: number[]) {
+    return [
+      ...this.needToVisitStack,
+      ...needToVisit.filter((n) => !this.needToVisitStack.includes(n))
+        .reverse(),
+    ];
   }
 }
