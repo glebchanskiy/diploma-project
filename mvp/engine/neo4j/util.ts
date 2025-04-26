@@ -27,3 +27,10 @@ export const toPathsMap = (nodes: Node[]): Map<number, NeoSearchPath> => {
 
   return paths
 }
+
+export const toNodesMap = (nodes: Node[]): Map<number, Node> => {
+  const paths = new Map()
+  nodes.forEach(node => paths.set(node.id.low, node))
+
+  return paths
+}

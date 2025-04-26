@@ -11,6 +11,7 @@ type SearchParams = {
 type FinalizeParams = {
   query: string;
   knowledge: string;
+  auxiliary?: string;
   comments: string;
 };
 
@@ -24,10 +25,10 @@ export const PromptCreator = {
       history,
     };
   },
-  finalize({ query, knowledge, comments }: FinalizeParams) {
+  finalize({ query, knowledge, auxiliary, comments }: FinalizeParams) {
     return {
         system: finalAnswer,
-        user: `User query: ${query}\nKNOWLEDGE: ${knowledge} \n COMMENT:\n${comments}`,
+        user: `User query: ${query}\nKNOWLEDGE: ${knowledge}\n ADDITIONAL:${auxiliary}\n COMMENT:\n${comments}`,
         history: []
     }
   },

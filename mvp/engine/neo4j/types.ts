@@ -15,6 +15,7 @@ export type NeoSearchResult = {
   visitedNodesIds: number[];
   knowledgeBaseFragment: string;
   paths: Map<number, NeoSearchPath>;
+  nodes: Map<number, Node>;
 };
 
 export type NeoSearchPath = { id: { low: number }; name: string }[];

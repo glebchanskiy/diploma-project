@@ -3,7 +3,8 @@ import { llmRequest } from "./ai/client.ts";
 import { PromptCreator } from "./prompt/creator.ts";
 import { clearJson } from "./util/clearJson.ts";
 import { parseLLMJson } from "./util/parseLLMJson.ts";
-import { NeoSearchPath } from "./neo4j/types.ts";
+import type { NeoSearchPath, Node } from "./neo4j/types.ts";
+import { mergePaths } from "./util/mergePaths.ts";
 
 type State = {
   query: string;
@@ -13,6 +14,7 @@ type State = {
 export type LLMResponse = {
   needToVisit?: number[];
   foundedKnowledgeID?: number;
+  auxiliaryKnowledge?: number[];
   comment: string;
 };
 
@@ -21,8 +23,9 @@ export class Context {
   private panicMode = false;
   private history: { req: string; res: string }[] = [];
   private visitedNodes: Set<number> = new Set();
-  private needToVisitStack: {id: number, name: string}[] = [];
+  private needToVisitStack: Node[] = [];
   private foundedKnowledgeID: number | undefined;
+  private auxiliaryKnowledge?: number[]
   private comments: string[] = [];
 
   private pathHistory: NeoSearchPath[] = []
@@ -52,9 +55,11 @@ export class Context {
         return this
       }
 
+      this.pathHistory.push(startNodeId.path.map(k => ({id: {low: k.id}, name: k.name})))
+
       result = await neoSearch({
         escapeIds: [...this.visitedNodes],
-        startNodeId,
+        startNodeId: startNodeId.id.low,
       });
       this.pathHistory.push()
     }
@@ -74,7 +79,7 @@ export class Context {
     }
 
     if (llmResponse.needToVisit) {
-      this.needToVisitStack = this.filterNneedToVisit(llmResponse.needToVisit);
+      this.needToVisitStack = this.filterNneedToVisit(llmResponse.needToVisit, result.nodes);
     }
 
     if (llmResponse.foundedKnowledgeID) {
@@ -82,6 +87,10 @@ export class Context {
       const path = result.paths.get(llmResponse.foundedKnowledgeID)
       if (path)
         this.pathHistory.push(path)
+    }
+
+    if (llmResponse.auxiliaryKnowledge) {
+      this.auxiliaryKnowledge = llmResponse.auxiliaryKnowledge
     }
 
     if (llmResponse.comment) {
@@ -103,7 +112,11 @@ export class Context {
     const comments = this.comments.map((c, i) => `Step ${i + 1}: ${c}`)
       .join("\n");
 
-    const result = await llmRequest(PromptCreator.finalize({ query, knowledge, comments }));
+    const auxiliary = (await Promise.all(this.auxiliaryKnowledge?.map(async a => await neoSearchById(a)) ?? []))
+    .map(knowledgeNode => `Knowledge[id=${knowledgeNode.id},name=${knowledgeNode.name},content=${knowledgeNode.description}]`)
+    .join('\n')
+
+    const result = await llmRequest(PromptCreator.finalize({ query, knowledge, auxiliary, comments }));
 
     console.log('\nSuccessfully executed. Search answer:\n', result)
     return result
@@ -116,7 +129,9 @@ export class Context {
     const comments = this.comments.map((c, i) => `Step ${i + 1}: ${c}`)
       .join("\n");
 
-    const result = await llmRequest(PromptCreator.finalize({ query, knowledge, comments }));
+    const auxiliary = undefined
+
+    const result = await llmRequest(PromptCreator.finalize({ query, knowledge, auxiliary, comments }));
   
     console.log('\nExecution failed. Search answer:\n', result)
     return result;
@@ -130,14 +145,16 @@ export class Context {
 
   public meta() {
     return {
-      paths: this.pathHistory
+      path: mergePaths(this.pathHistory)
     }
   }
 
-  private filterNneedToVisit(needToVisit: number[]) {
+  private filterNneedToVisit(needToVisit: number[], nodesMap: Map<number, Node>) {
     return [
       ...this.needToVisitStack,
-      ...needToVisit.filter((n) => !this.needToVisitStack.includes(n))
+      ...needToVisit
+        .map(n => nodesMap.get(n)!)
+        .filter((n) => !this.needToVisitStack.find(v => v.id?.low == n?.id?.low))
         .reverse(),
     ];
   }

@@ -1,5 +1,5 @@
 import neo4j from "@neo4j";
-import { toPathsMap, trnasformToNodes } from "./util.ts";
+import { toNodesMap, toPathsMap, trnasformToNodes } from "./util.ts";
 import { firstLevelQuery, getById, subsequentQuery } from "./queries.ts";
 import type { NeoSearchResult, Node } from "./types.ts";
 import { transformToText } from "../util/transform.ts";
@@ -19,7 +19,8 @@ export const neoSearchFirst = async (): Promise<NeoSearchResult> => {
   return {
     visitedNodesIds,
     knowledgeBaseFragment: transformToText(nodes),
-    paths: toPathsMap(nodes)
+    paths: toPathsMap(nodes),
+    nodes: toNodesMap(nodes)
   };
 };
 
@@ -44,7 +45,8 @@ export const neoSearch = async ({startNodeId, escapeIds }: NeoSearchProps): Prom
   return {
     visitedNodesIds,
     knowledgeBaseFragment: transformToText(nodes),
-    paths: toPathsMap(nodes)
+    paths: toPathsMap(nodes),
+    nodes: toNodesMap(nodes)
   };
 };
 

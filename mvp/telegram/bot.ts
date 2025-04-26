@@ -27,12 +27,10 @@ bot.on("message", async (ctx) => {
 
   console.log('meta: ', meta)
 
-  if (meta.paths.length) {
-    const paths = meta.paths.map(p => p.map(k => k.name).join(' -> ')).join('\n')
-    ctx.reply(paths)
+  if (meta.path.length) {
+    ctx.reply(meta.path.map((k, i) => `${'\t'.repeat(i)}${k}`).join(' -> \n'))
   }
   
-
 });
 
 export default bot;
