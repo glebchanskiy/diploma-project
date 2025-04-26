@@ -9,7 +9,8 @@ export const trnasformToNodes = (
     name: record.get("name"),
     description: record.get("description"),
     childCount: safeGet(record, "child_count"),
-    path: safeGet(record, "full_path")
+    path: safeGet(record, "full_path"),
+    childIds: safeGet(record, "childIds")
   }));
 
 

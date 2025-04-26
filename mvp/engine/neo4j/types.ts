@@ -9,6 +9,7 @@ export type Node = {
     id: number;
     name: string;
   }[];
+  childIds?: { low: number }[];
 };
 
 export type NeoSearchResult = {

@@ -5,6 +5,7 @@ import { clearJson } from "./util/clearJson.ts";
 import { parseLLMJson } from "./util/parseLLMJson.ts";
 import type { NeoSearchPath, Node } from "./neo4j/types.ts";
 import { mergePaths } from "./util/mergePaths.ts";
+import { visitStackToString } from "./util/visitStackToString.ts";
 
 type State = {
   query: string;
@@ -25,10 +26,10 @@ export class Context {
   private visitedNodes: Set<number> = new Set();
   private needToVisitStack: Node[] = [];
   private foundedKnowledgeID: number | undefined;
-  private auxiliaryKnowledge?: number[]
+  private auxiliaryKnowledge?: number[];
   private comments: string[] = [];
 
-  private pathHistory: NeoSearchPath[] = []
+  private pathHistory: NeoSearchPath[] = [];
 
   constructor(private state: State) {
   }
@@ -42,28 +43,34 @@ export class Context {
       return this.panicMode = true;
     }
 
-    console.log(`Search execution #${this.iteration++}`);
+    console.log(
+      `Search execution #${this.iteration++} visit stack: ${
+        visitStackToString(this.needToVisitStack)
+      }`,
+    );
 
     let result;
     if (this.visitedNodes.size === 0 || this.needToVisitStack.length === 0) {
       result = await neoSearchFirst();
     } else {
-      const startNodeId = this.needToVisitStack.pop()
+      const startNodeId = this.needToVisitStack.pop();
 
       if (!startNodeId) {
-        this.panicMode = true
-        return this
+        this.panicMode = true;
+        return this;
       }
 
-      this.pathHistory.push(startNodeId.path.map(k => ({id: {low: k.id}, name: k.name})))
+      this.pathHistory.push(
+        startNodeId.path.map((k) => ({ id: { low: k.id }, name: k.name })),
+      );
 
       result = await neoSearch({
         escapeIds: [...this.visitedNodes],
         startNodeId: startNodeId.id.low,
       });
-      this.pathHistory.push()
+      this.pathHistory.push();
     }
-    
+
     result.visitedNodesIds.forEach((n) => this.visitedNodes.add(n));
 
     const query = this.state.query;
@@ -79,18 +86,22 @@ export class Context {
     }
 
     if (llmResponse.needToVisit) {
-      this.needToVisitStack = this.filterNneedToVisit(llmResponse.needToVisit, result.nodes);
+      this.needToVisitStack = this.filterNneedToVisit(
+        llmResponse.needToVisit,
+        result.nodes,
+      );
     }
 
     if (llmResponse.foundedKnowledgeID) {
       this.foundedKnowledgeID = llmResponse.foundedKnowledgeID;
-      const path = result.paths.get(llmResponse.foundedKnowledgeID)
-      if (path)
-        this.pathHistory.push(path)
+      const path = result.paths.get(llmResponse.foundedKnowledgeID);
+      if (path) {
+        this.pathHistory.push(path);
+      }
     }
 
     if (llmResponse.auxiliaryKnowledge) {
-      this.auxiliaryKnowledge = llmResponse.auxiliaryKnowledge
+      this.auxiliaryKnowledge = llmResponse.auxiliaryKnowledge;
     }
 
     if (llmResponse.comment) {
@@ -106,20 +117,38 @@ export class Context {
   private async ok() {
     const knowledgeNode = await neoSearchById(this.foundedKnowledgeID!);
 
+    if (!knowledgeNode?.id) return "kek";
+
     const query = this.state.query;
     const knowledge =
-      `Knowledge[id=${knowledgeNode.id},name=${knowledgeNode.name},content=${knowledgeNode.description}]`;
+      `Knowledge[id=${knowledgeNode?.id},name=${knowledgeNode?.name},content=${knowledgeNode?.description}]`;
     const comments = this.comments.map((c, i) => `Step ${i + 1}: ${c}`)
       .join("\n");
 
-    const auxiliary = (await Promise.all(this.auxiliaryKnowledge?.map(async a => await neoSearchById(a)) ?? []))
-    .map(knowledgeNode => `Knowledge[id=${knowledgeNode.id},name=${knowledgeNode.name},content=${knowledgeNode.description}]`)
-    .join('\n')
+    const auxiliary = (await Promise.all(
+      this.auxiliaryKnowledge?.map(async (a) => await neoSearchById(a)) ?? [],
+    ))
+      .filter((n) => !!n?.id)
+      .map((knowledgeNode) =>
+        `Knowledge[id=${knowledgeNode.id},name=${knowledgeNode.name},content=${knowledgeNode.description}]`
+      )
+      .join("\n");
 
-    const result = await llmRequest(PromptCreator.finalize({ query, knowledge, auxiliary, comments }));
+    let result = await llmRequest(
+      PromptCreator.finalize({ query, knowledge, auxiliary, comments }),
+    );
 
-    console.log('\nSuccessfully executed. Search answer:\n', result)
-    return result
+    if (knowledgeNode.childIds) {
+      result += "\n\nДополнительная информация:\n" 
+      result += (await Promise.all(
+          knowledgeNode.childIds.map(async (a) => await neoSearchById(a.low)),
+        ))
+          .map((r) => `\n#${r.id} ${r.name.toUpperCase()}\n${r.description}`)
+          .join("\n");
+    }
+
+    console.log("\nSuccessfully executed. Search answer:\n", result);
+    return result;
   }
 
   private async failed() {
@@ -129,11 +158,13 @@ export class Context {
     const comments = this.comments.map((c, i) => `Step ${i + 1}: ${c}`)
       .join("\n");
 
-    const auxiliary = undefined
+    const auxiliary = undefined;
 
-    const result = await llmRequest(PromptCreator.finalize({ query, knowledge, auxiliary, comments }));
-  
-    console.log('\nExecution failed. Search answer:\n', result)
+    const result = await llmRequest(
+      PromptCreator.finalize({ query, knowledge, auxiliary, comments }),
+    );
+
+    console.log("\nExecution failed. Search answer:\n", result);
     return result;
   }
 
@@ -145,16 +176,21 @@ export class Context {
 
   public meta() {
     return {
-      path: mergePaths(this.pathHistory)
-    }
+      path: mergePaths(this.pathHistory),
+    };
   }
 
-  private filterNneedToVisit(needToVisit: number[], nodesMap: Map<number, Node>) {
+  private filterNneedToVisit(
+    needToVisit: number[],
+    nodesMap: Map<number, Node>,
+  ) {
     return [
       ...this.needToVisitStack,
       ...needToVisit
-        .map(n => nodesMap.get(n)!)
-        .filter((n) => !this.needToVisitStack.find(v => v.id?.low == n?.id?.low))
+        .map((n) => nodesMap.get(n)!)
+        .filter((n) =>
+          !this.needToVisitStack.find((v) => v.id?.low == n?.id?.low)
+        )
         .reverse(),
     ];
   }

@@ -10,7 +10,7 @@ bot.use(middleware);
 bot.on("message", async (ctx) => {
   if (!ctx.msg.text) return;
 
-  const context = ContextFactory.createRequest(ctx.msg.text, 4)
+  const context = ContextFactory.createRequest(ctx.msg.text, 10)
 
   while (!context.isFound()) {
     await context.executeNextSearch()
