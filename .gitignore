@@ -5,3 +5,6 @@
 **/postgres-data
 
 report/build
+report/**/*.aux
+report/**/*.fdb_latexmk
+report/**/*.fls
