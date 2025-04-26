@@ -1,8 +1,8 @@
 import neo4j from "@neo4j";
-import { toNodesMap, toPathsMap, trnasformToNodes } from "./util.ts";
-import { firstLevelQuery, getById, subsequentQuery } from "./queries.ts";
-import type { NeoSearchResult, Node } from "./types.ts";
-import { transformToText } from "../util/transform.ts";
+import { toNodesMap, toPathsMap, trnasformToNodes } from "@knowledgeBase/util.ts";
+import { firstLevelQuery, getById, subsequentQuery } from "@knowledgeBase/queries.ts";
+import type { NeoSearchResult, Node } from "@knowledgeBase/types.ts";
+import { transformToText } from "@util/transform.ts";
 
 const URI = "bolt://localhost:7687";
 const driver = neo4j.driver(URI, neo4j.auth.basic("neo4j", "secret123"));

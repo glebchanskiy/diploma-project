@@ -1,5 +1,5 @@
 import OpenAI from "@openai";
-import type { ChatCompletionMessage } from "https://deno.land/x/openai@v4.69.0/resources/mod.ts";
+import type { ChatCompletionMessage } from "@openai/resources";
 
 const baseURL = "https://hubai.loe.gg/v1";
 const apiKey = Deno.env.get("AI_TOKEN");

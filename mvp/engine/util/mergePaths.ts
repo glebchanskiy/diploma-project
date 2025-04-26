@@ -1,4 +1,4 @@
-import type { NeoSearchPath } from "../neo4j/types.ts";
+import type { NeoSearchPath } from "@knowledgeBase/types.ts";
 
 const getFirst = (path: NeoSearchPath) => {
   return  path.at(0)

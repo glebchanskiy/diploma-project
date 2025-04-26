@@ -1,11 +1,15 @@
-import { neoSearch, neoSearchById, neoSearchFirst } from "./neo4j/client.ts";
-import { llmRequest } from "./ai/client.ts";
-import { PromptCreator } from "./prompt/creator.ts";
-import { clearJson } from "./util/clearJson.ts";
-import { parseLLMJson } from "./util/parseLLMJson.ts";
-import type { NeoSearchPath, Node } from "./neo4j/types.ts";
-import { mergePaths } from "./util/mergePaths.ts";
-import { visitStackToString } from "./util/visitStackToString.ts";
+import {
+  neoSearch,
+  neoSearchById,
+  neoSearchFirst,
+} from "@knowledgeBase/client.ts";
+import { llmRequest } from "@ai/client.ts";
+import { PromptCreator } from "@prompt/creator.ts";
+import { clearJson } from "@util/clearJson.ts";
+import { parseLLMJson } from "@util/parseLLMJson.ts";
+import type { NeoSearchPath, Node } from "@knowledgeBase/types.ts";
+import { mergePaths } from "@util/mergePaths.ts";
+import { visitStackToString } from "@util/visitStackToString.ts";
 
 type State = {
   query: string;
@@ -139,12 +143,12 @@ export class Context {
     );
 
     if (knowledgeNode.childIds) {
-      result += "\n\nДополнительная информация:\n" 
+      result += "\n\nДополнительная информация:\n";
       result += (await Promise.all(
-          knowledgeNode.childIds.map(async (a) => await neoSearchById(a.low)),
-        ))
-          .map((r) => `\n#${r.id} ${r.name.toUpperCase()}\n${r.description}`)
-          .join("\n");
+        knowledgeNode.childIds.map(async (a) => await neoSearchById(a.low)),
+      ))
+        .map((r) => `\n#${r.id} ${r.name.toUpperCase()}\n${r.description}`)
+        .join("\n");
     }
 
     console.log("\nSuccessfully executed. Search answer:\n", result);

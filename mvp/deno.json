@@ -5,8 +5,7 @@
     "@std/path": "jsr:@std/path",
     "@grammy": "https://deno.land/x/grammy@v1.35.1/mod.ts",
     "@grammy/types": "https://deno.land/x/grammy@v1.35.1/types.ts",
-    "@openai": "https://deno.land/x/openai@v4.69.0/mod.ts",
-    "@src/": "./src/"
+    "@openai": "https://deno.land/x/openai@v4.69.0/mod.ts"
   },
   "unstable": ["kv"],
   "tasks": {

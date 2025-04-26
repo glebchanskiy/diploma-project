@@ -1,5 +1,5 @@
-import type { History } from "../ai/client.ts";
-import { finalAnswer, sysAsist, sysPromptV_0_1 } from "./prompts.ts";
+import type { History } from "@ai/client.ts";
+import { finalAnswer, sysPromptV_0_1 } from "@prompt/prompts.ts";
 
 type SearchParams = {
   query: string;

@@ -1,5 +1,5 @@
 import type { Record, RecordShape } from "@neo4j";
-import type { NeoSearchPath, Node } from "./types.ts";
+import type { NeoSearchPath, Node } from "@knowledgeBase/types.ts";
 
 export const trnasformToNodes = (
   records: Record<RecordShape, PropertyKey, RecordShape<PropertyKey, number>>[],
