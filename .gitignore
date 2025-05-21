@@ -8,3 +8,4 @@ report/build
 report/**/*.aux
 report/**/*.fdb_latexmk
 report/**/*.fls
+report/**/*.log
