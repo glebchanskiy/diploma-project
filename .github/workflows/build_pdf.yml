@@ -24,6 +24,9 @@ jobs:
           run: |
             cd report
             latexmk -pdf -interaction=nonstopmode -output-directory=build diploma/diploma_report.tex || true
+            echo " " > diploma/diploma_report.tex
+            latexmk -pdf -interaction=nonstopmode -output-directory=build diploma/diploma_report.tex || true
+            echo " " > diploma/diploma_report.tex
             latexmk -pdf -interaction=nonstopmode -output-directory=build diploma/diploma_report.tex || true
             ls build/*.pdf
             echo '----'
