@@ -1,0 +1,62 @@
+@startuml
+title "Архитектура Интегрированной Системы Управления Обращениями"
+
+
+package "Клиентский Уровень" {
+  actor Пользователь as User
+  actor Администратор as Admin
+
+  node "Telegram Бот" as BotUI {
+    component "Адаптер Telegram" as BotAdapter
+  }
+
+  node "Веб-Приложение (React)" as WebUI {
+    component "Пользовательский\nИнтерфейс" as WebUserClient
+    component "Административный\nИнтерфейс" as WebAdminClient
+  }
+}
+
+package "Серверный Уровень" {
+  interface "API Системы\n(WebSocket/HTTP)" as SystemAPI
+
+  node "Ядро Системы" as CoreSystem {
+    component "Обработчик Запросов\n(Query Service)" as QueryService
+    component "Обработчик Команд\n(Админ. Функции)" as CommandService
+    component "Модуль LLM-Навигации" as LLMNav
+    component "Модуль Управления\nКонтекстом Сессии" as SessionCtx
+  }
+
+  database "База Знаний\n(Neo4j)" as KnowledgeBase
+  cloud "Внешний LLM Сервис\n(OpenAI-совместимый API)" as LLMService
+}
+
+User -- BotAdapter
+User -- WebUserClient
+Admin -- WebAdminClient
+
+BotAdapter --> SystemAPI
+WebUserClient --> SystemAPI
+WebAdminClient --> SystemAPI
+
+SystemAPI -- QueryService
+SystemAPI -- CommandService
+
+QueryService --> LLMNav
+QueryService --> SessionCtx
+QueryService --> KnowledgeBase : <<читает данные>>
+
+CommandService --> KnowledgeBase : <<управляет данными>>
+
+LLMNav --> LLMService : <<API вызовы>>
+
+note right of CoreSystem
+  <b>Ключевые Принципы:</b>
+  - Модульная структура
+  - Разделение логики обработки
+    запросов и команд (CQRS-like)
+  - Управляемая LLM навигация
+    по графу знаний
+  - Обеспечение прозрачности
+    и объяснимости ответов
+end note
+@enduml

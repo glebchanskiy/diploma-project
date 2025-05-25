@@ -1,0 +1,43 @@
+@startuml
+title "Последовательность обработки запроса"
+
+actor "Пользователь" as user
+participant "Telegram-бот" as bot
+participant "Ядро системы" as core
+participant "LLM" as llm
+database "Neo4j БЗ" as db
+
+user -> bot: Отправка запроса
+activate bot
+
+bot -> core: Инициализация сессии
+activate core
+
+core -> db: Поиск начальных узлов
+db --> core: Узлы верхнего уровня
+
+loop Итеративный поиск
+    core -> llm: Анализ + контекст + узлы БЗ
+    llm --> core: Рекомендации навигации
+    
+    alt Найден финальный ответ
+        core -> db: Получение полного ответа
+        db --> core: Содержимое узла
+    else Углубление поиска
+        core -> db: Переход к дочерним узлам
+        db --> core: Дочерние узлы
+    end
+end
+
+core --> bot: Финальный ответ + путь
+deactivate core
+
+bot --> user: Структурированный ответ
+deactivate bot
+
+note over user, db
+    Прозрачный процесс:
+    пользователь видит путь
+    получения ответа
+end note
+@enduml

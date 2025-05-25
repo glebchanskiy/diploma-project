@@ -1,0 +1,138 @@
+@startuml
+title "Проектируемая микросервисная архитектура"
+
+package "Пользовательские адаптеры" {
+  [Telegram-бот] as tg
+  [Веб-приложение] as web
+  [Электронная почта] as email
+  note bottom of email
+    Различные каналы
+    взаимодействия
+  end note
+}
+
+package "Унифицированный интерфейс" {
+  [WS-API\n(Web Socket API)] as wsapi
+  note bottom of wsapi
+    Стандартизация
+    входящих запросов
+  end note
+}
+
+package "CQRS слой" {
+  [Модуль запросов\n(Query Handler)] as queries
+  [Модуль команд\n(Command Handler)] as commands
+  
+  note right of queries
+    **Обработка чтения данных**
+    • Работа с кешем
+    • Быстрые запросы
+  end note
+  
+  note right of commands
+    **Обработка изменений**
+    • Регистрация обращений
+    • Обновление статусов
+  end note
+}
+
+package "Асинхронное взаимодействие" {
+  queue "Брокер сообщений" as broker {
+    [Команды]
+    [События]
+    [Уведомления]
+  }
+  note bottom of broker
+    **Изоляция компонентов**
+    • Масштабируемость
+    • Отказоустойчивость
+  end note
+}
+
+package "Основные сервисы системы" {
+  [Модуль поиска решений\n(Интеллектуальное ядро)] as intelligence
+  [Другие сервисы системы\n(Дополнительные модули)] as other_services
+  
+  note bottom of intelligence
+    **Ключевой компонент:**
+    • Алгоритм углубления
+    • Навигация по БЗ
+    • Взаимодействие с LLM
+  end note
+  
+  note bottom of other_services
+    **Расширяющие модули:**
+    • Нотификации
+    • Аналитика
+    • Мониторинг
+  end note
+}
+
+package "Хранилища данных" {
+  database "База знаний\n(Neo4j)" as neo4j
+  database "Хранилище временной/\nконтекстной информации\n(In-memory)" as cache
+  
+  note bottom of neo4j
+    **Иерархическая структура**
+    • Граф знаний
+    • Связи декомпозиции
+  end note
+  
+  note bottom of cache
+    **Контекст сессий**
+    • Состояние диалога
+    • Промежуточные результаты
+  end note
+}
+
+package "Внешние интеграции" {
+  cloud "LLM\n(OpenAI-совместимые API)" as llm
+  cloud "Внешние системы\nдля получения данных" as external
+}
+
+' Connections
+tg --> wsapi
+web --> wsapi
+email --> wsapi
+
+wsapi --> queries : Запросы чтения
+wsapi --> commands : Команды записи
+
+queries --> broker
+commands --> broker
+
+broker --> intelligence
+broker --> other_services
+
+intelligence --> neo4j
+intelligence --> cache
+intelligence --> llm
+
+other_services --> cache
+other_services --> external
+
+' Additional connections
+queries ..> cache : Быстрое чтение
+commands ..> neo4j : Обновления БЗ
+
+note top of wsapi
+  **Мультиканальность**
+  Единый интерфейс для
+  всех пользовательских
+  каналов
+end note
+
+note left of broker
+  **Событийная архитектура**
+  Асинхронная обработка
+  позволяет масштабировать
+  систему горизонтально
+end note
+
+note right of intelligence
+  **Прозрачность решений**
+  Система предоставляет
+  путь навигации по БЗ
+  для каждого ответа
+end note
+@enduml

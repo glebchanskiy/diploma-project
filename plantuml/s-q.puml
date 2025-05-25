@@ -1,0 +1,21 @@
+@startuml
+actor "Пользователь" as User
+participant "Клиентский портал" as Portal
+participant "Система управления" as System
+participant "ИИ-модуль" as AI
+participant "Оператор" as Operator
+participant "Старший специалист" as Supervisor
+
+User -> Portal: Создать обращение
+Portal -> System: Отправить данные обращения
+System -> AI: Анализировать обращение и прогнозировать эскалацию
+AI -> System: Вероятность эскалации + рекомендации
+alt Высокий риск эскалации
+    System -> Supervisor: Уведомить о критическом тикете
+    System -> User: Предложить альтернативное решение (звонок, чат)
+else Низкий риск
+    System -> Operator: Передать обращение с готовыми рекомендациями
+end
+Operator -> System: Ответить пользователю
+System -> User: Отправить ответ
+@enduml
